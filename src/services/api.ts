@@ -15,7 +15,7 @@ class ApiService {
   private baseURL: string;
 
   constructor() {
-    this.baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+    this.baseURL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://merrive-api-v2.onrender.com';
     this.api = axios.create({
       baseURL: this.baseURL,
       headers: {
@@ -75,7 +75,7 @@ class ApiService {
     }
     
     const response: AxiosResponse<ApiResponse<Service[]>> = await this.api.get(`/projects/search/global?${params.toString()}`);
-    return response.data.data.projects || response.data.data;
+    return response.data.data;
   }
 
   async getServiceById(id: string): Promise<Service> {
@@ -85,7 +85,7 @@ class ApiService {
 
   async getServicesByProvider(providerId: string): Promise<Service[]> {
     const response: AxiosResponse<ApiResponse<Service[]>> = await this.api.get(`/projects/artisan/${providerId}`);
-    return response.data.data.projects || response.data.data;
+    return response.data.data;
   }
 
   // Providers
@@ -107,7 +107,7 @@ class ApiService {
 
   // Médias
   async getServiceMedia(serviceId: string): Promise<any[]> {
-    const response: AxiosResponse<ApiResponse<any[]>> = await this.api.get(`/projects/${serviceId}`);
+    const response: AxiosResponse<ApiResponse<Service>> = await this.api.get(`/projects/${serviceId}`);
     const project = response.data.data;
     return project.files || [];
   }
@@ -124,18 +124,18 @@ class ApiService {
     }
     
     const response: AxiosResponse<ApiResponse<Service[]>> = await this.api.get(`/projects/search/global?${params.toString()}`);
-    return response.data.data.projects || response.data.data;
+    return response.data.data;
   }
 
   // Statistiques
   async getServicesByYear(year: number): Promise<Service[]> {
     const response: AxiosResponse<ApiResponse<Service[]>> = await this.api.get(`/projects/year/${year}`);
-    return response.data.data.projects || response.data.data;
+    return response.data.data;
   }
 
   async getServicesByCategory(category: string): Promise<Service[]> {
     const response: AxiosResponse<ApiResponse<Service[]>> = await this.api.get(`/projects/category/${category}`);
-    return response.data.data.projects || response.data.data;
+    return response.data.data;
   }
 
   // ============ Méthodes pour la Bibliothèque ============
