@@ -219,3 +219,4 @@ export default function MediaViewer({ files, isOpen, onClose, initialIndex = 0 }
     </div>
   );
 }
+

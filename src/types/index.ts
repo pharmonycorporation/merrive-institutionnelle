@@ -96,8 +96,9 @@ export interface DashboardStats {
 
 export interface AuthResponse {
   user: User;
-  token: string;
+  accessToken: string;
   refreshToken: string;
+  expiresIn: number;
 }
 
 export interface LoginCredentials {

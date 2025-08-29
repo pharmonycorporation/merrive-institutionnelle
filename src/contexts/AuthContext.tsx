@@ -55,7 +55,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setLoading(true);
       const response: AuthResponse = await apiService.login(credentials);
       
-      localStorage.setItem('auth_token', response.token);
+      localStorage.setItem('auth_token', response.accessToken);
       localStorage.setItem('refresh_token', response.refreshToken);
       localStorage.setItem('user', JSON.stringify(response.user));
       
@@ -95,3 +95,4 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+
