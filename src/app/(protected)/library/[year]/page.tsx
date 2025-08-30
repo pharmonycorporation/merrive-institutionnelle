@@ -70,8 +70,8 @@ export default function YearCategoriesPage() {
     category.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const getCategoryIcon = (iconName: string) => {
-    switch (iconName) {
+  const getCategoryIcon = (iconName?: string) => {
+    switch (iconName || 'folder') {
       case 'palette': return <Palette className="h-6 w-6" />;
       case 'music': return <Music className="h-6 w-6" />;
       case 'file-text': return <FileText className="h-6 w-6" />;
