@@ -492,7 +492,7 @@ class ApiService {
       console.warn('Endpoint library/projects non disponible, utilisation du fallback (archives)');
       try {
         // Récupérer les projets de l'année puis filtrer par catégorie
-        let projects = await this.getServicesByYear(year);
+        const projects = await this.getServicesByYear(year);
         
         // S'assurer que projects est un tableau
         const projectsArray = Array.isArray(projects) ? projects : [];

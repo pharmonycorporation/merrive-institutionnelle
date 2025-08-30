@@ -79,7 +79,7 @@ export default function CategoryProjectsPage() {
     };
 
     fetchProjects();
-  }, [year, category]);
+  }, [year, category, showToast]);
 
   const filteredProjects = projects.filter(project => 
     project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||

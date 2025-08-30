@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { 
   FileText, 
-  Image, 
+  Image as ImageIcon, 
   Video, 
   Music, 
   File,
@@ -56,7 +56,7 @@ export default function ProjectMedia({ projectId, projectName }: ProjectMediaPro
 
   const getFileIcon = (fileType: string) => {
     switch (fileType) {
-      case 'image': return <Image className="h-6 w-6 text-blue-500" />;
+      case 'image': return <ImageIcon className="h-6 w-6 text-blue-500" />;
       case 'video': return <Video className="h-6 w-6 text-red-500" />;
       case 'audio': return <Music className="h-6 w-6 text-green-500" />;
       case 'document': return <FileText className="h-6 w-6 text-orange-500" />;
@@ -239,4 +239,3 @@ export default function ProjectMedia({ projectId, projectName }: ProjectMediaPro
     </>
   );
 }
-

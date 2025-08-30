@@ -8,7 +8,7 @@ import {
   ArrowLeft,
   Search,
   FileText,
-  Image,
+  Image as ImageIcon,
   Video,
   Music,
   Palette,
@@ -64,7 +64,7 @@ export default function YearCategoriesPage() {
     };
 
     fetchCategories();
-  }, [year]);
+  }, [year, showToast]);
 
   const filteredCategories = categories.filter(category => 
     category.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -78,7 +78,7 @@ export default function YearCategoriesPage() {
       case 'camera': return <Camera className="h-6 w-6" />;
       case 'video': return <Video className="h-6 w-6" />;
       case 'code': return <Code className="h-6 w-6" />;
-      case 'image': return <Image className="h-6 w-6" />;
+      case 'image': return <ImageIcon className="h-6 w-6" />;
       default: return <Folder className="h-6 w-6" />;
     }
   };

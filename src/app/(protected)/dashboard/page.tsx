@@ -35,7 +35,7 @@ export default function DashboardPage() {
     };
 
     fetchStats();
-  }, []);
+  }, [showToast]);
 
   if (loading) {
     return (

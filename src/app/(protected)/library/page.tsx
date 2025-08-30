@@ -56,7 +56,7 @@ export default function LibraryPage() {
     };
 
     fetchYears();
-  }, []);
+  }, [showToast]);
 
   const filteredYears = (years || []).filter(year => 
     year.year.toString().includes(searchTerm)

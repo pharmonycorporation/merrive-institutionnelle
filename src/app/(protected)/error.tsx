@@ -5,7 +5,6 @@ import PageError from '@/components/common/PageError';
 
 export default function ProtectedError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {
-    // eslint-disable-next-line no-console
     console.error('Protected segment error:', error);
   }, [error]);
 
@@ -17,4 +16,3 @@ export default function ProtectedError({ error, reset }: { error: Error & { dige
     />
   );
 }
-

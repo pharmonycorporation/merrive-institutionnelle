@@ -7,7 +7,7 @@ import {
   X, 
   Download, 
   FileText, 
-  Image, 
+  Image as ImageIcon, 
   Video, 
   Music, 
   File,
@@ -75,7 +75,7 @@ export default function MediaViewer({ files, isOpen, onClose, initialIndex = 0 }
 
   const getFileIcon = (fileType: string) => {
     switch (fileType) {
-      case 'image': return <Image className="h-8 w-8" />;
+      case 'image': return <ImageIcon className="h-8 w-8" />;
       case 'video': return <Video className="h-8 w-8" />;
       case 'audio': return <Music className="h-8 w-8" />;
       case 'document': return <FileText className="h-8 w-8" />;
@@ -219,4 +219,3 @@ export default function MediaViewer({ files, isOpen, onClose, initialIndex = 0 }
     </div>
   );
 }
-
