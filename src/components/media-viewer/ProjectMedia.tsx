@@ -142,7 +142,7 @@ export default function ProjectMedia({ projectId, projectName }: ProjectMediaPro
             {fileGroups.images.length > 0 && (
               <div>
                 <h4 className="font-medium text-gray-900 mb-3 flex items-center space-x-2">
-                  <Image className="h-4 w-4 text-blue-500" />
+                  <ImageIcon className="h-4 w-4 text-blue-500" />
                   <span>Images ({fileGroups.images.length})</span>
                 </h4>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
