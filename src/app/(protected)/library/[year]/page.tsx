@@ -18,12 +18,13 @@ import {
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import apiService from '@/services/api';
+import { useToast } from '@/contexts/ToastContext';
 
 interface CategoryStats {
   name: string;
   count: number;
   revenue: number;
-  icon: string;
+  logo: string | null;
 }
 
 export default function YearCategoriesPage() {
@@ -33,6 +34,7 @@ export default function YearCategoriesPage() {
   const [categories, setCategories] = useState<CategoryStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const { showToast } = useToast();
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -40,9 +42,10 @@ export default function YearCategoriesPage() {
         setLoading(true);
         const categoriesData = await apiService.getLibraryYearCategories(year);
         setCategories(categoriesData);
-      } catch (error) {
+      } catch (error: any) {
         console.error('Erreur lors du chargement des catégories:', error);
         // Fallback avec des données simulées
+        showToast({ type: 'info', message: 'Fallback archives: catégories simulées.' });
         const mockCategories: CategoryStats[] = [
           { name: 'Art', count: 45, revenue: 250000, icon: 'palette' },
           { name: 'Musique', count: 32, revenue: 180000, icon: 'music' },
@@ -110,7 +113,7 @@ export default function YearCategoriesPage() {
           </Link>
           <div>
             <h1 className="text-3xl font-bold text-gray-900">
-              Bibliothèque {year}
+              Archives {year}
             </h1>
             <p className="text-gray-600 mt-1">
               Catégories de projets pour l'année {year}

@@ -4,6 +4,9 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import Navigation from '@/components/layout/Navigation';
+import ErrorBoundary from '@/components/common/ErrorBoundary';
+import Loading from '@/components/common/Loading';
+import React from 'react';
 
 export default function ProtectedLayout({
   children,
@@ -36,10 +39,13 @@ export default function ProtectedLayout({
       <Navigation />
       <div className="lg:pl-64">
         <main className="min-h-screen">
-          {children}
+          <React.Suspense fallback={<Loading /> }>
+            <ErrorBoundary>
+              {children}
+            </ErrorBoundary>
+          </React.Suspense>
         </main>
       </div>
     </div>
   );
 }
-

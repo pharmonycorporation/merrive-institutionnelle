@@ -145,11 +145,12 @@ npm start
 Créer un fichier `.env.local` :
 
 ```env
-# URL de l'API MERRIVE
-NEXT_PUBLIC_API_URL=http://localhost:3001/api
+# URL de base de l'API MERRIVE (ex: https://api.example.com)
+NEXT_PUBLIC_API_BASE_URL=http://localhost:3001
 
-# Configuration Next.js
+# Configuration Application
 NEXT_PUBLIC_APP_NAME=Portail Institutionnel MERRIVE
+NEXT_PUBLIC_APP_VERSION=1.0.0
 ```
 
 ### Configuration API

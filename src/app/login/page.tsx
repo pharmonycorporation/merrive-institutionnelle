@@ -9,7 +9,8 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
 import { useAuth } from '@/contexts/AuthContext';
-import { Eye, EyeOff, Building2, Shield } from 'lucide-react';
+import { Eye, EyeOff, Shield } from 'lucide-react';
+import { useToast } from '@/contexts/ToastContext';
 
 const loginSchema = z.object({
   email: z.string().email('Email invalide'),
@@ -24,6 +25,7 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const router = useRouter();
   const { login } = useAuth();
+  const { showToast } = useToast();
 
   const {
     register,
@@ -38,9 +40,12 @@ export default function LoginPage() {
       setIsLoading(true);
       setError('');
       await login(data);
+      showToast({ type: 'success', message: 'Connexion réussie.' });
       router.push('/dashboard');
     } catch (error: any) {
-      setError(error.response?.data?.message || 'Erreur de connexion');
+      const msg = error?.response?.data?.message || 'Erreur de connexion';
+      setError(msg);
+      showToast({ type: 'error', message: msg });
     } finally {
       setIsLoading(false);
     }
@@ -51,8 +56,12 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         <Card className="shadow-xl">
           <CardHeader className="text-center">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100">
-              <Building2 className="h-8 w-8 text-blue-600" />
+            <div className="mx-auto mb-4 h-16 w-16">
+              <img
+                src="/images/logo.png"
+                alt="Merrive"
+                className="h-16 w-16 object-contain"
+              />
             </div>
             <CardTitle className="text-2xl font-bold text-gray-900">
               Portail Institutionnel

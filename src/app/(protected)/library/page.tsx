@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import apiService from '@/services/api';
+import { useToast } from '@/contexts/ToastContext';
 
 interface YearStats {
   year: number;
@@ -25,6 +26,7 @@ export default function LibraryPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const yearsPerPage = 10;
+  const { showToast } = useToast();
 
   useEffect(() => {
     const fetchYears = async () => {
@@ -32,9 +34,10 @@ export default function LibraryPage() {
         setLoading(true);
         const yearsData = await apiService.getLibraryYears();
         setYears(yearsData);
-      } catch (error) {
+      } catch (error: any) {
         console.error('Erreur lors du chargement des années:', error);
         // Fallback avec des données simulées
+        showToast({ type: 'info', message: 'Fallback archives: données simulées utilisées.' });
         const currentYear = new Date().getFullYear();
         const mockYears: YearStats[] = [];
         
@@ -86,7 +89,7 @@ export default function LibraryPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Bibliothèque</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Archives</h1>
           <p className="text-gray-600 mt-1">
             Explorez les projets par année
           </p>

@@ -4,31 +4,31 @@ import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
 import { 
-  Building2, 
   Users, 
   FileText, 
-  DollarSign, 
-  TrendingUp, 
-  TrendingDown,
+  TrendingUp,
   Search,
   Calendar
 } from 'lucide-react';
 import { DashboardStats } from '@/types';
 import apiService from '@/services/api';
+import { useToast } from '@/contexts/ToastContext';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
 export default function DashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const { showToast } = useToast();
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
         const data = await apiService.getDashboardStats();
         setStats(data);
-      } catch (error) {
+      } catch (error: any) {
         console.error('Erreur lors du chargement des statistiques:', error);
+        showToast({ type: 'error', message: 'Impossible de charger les statistiques.' });
       } finally {
         setLoading(false);
       }
@@ -80,16 +80,12 @@ export default function DashboardPage() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Revenus Totaux</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Total Annonces</CardTitle>
+            <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {stats.totalRevenue.toLocaleString()} FCFA
-            </div>
-            <p className="text-xs text-muted-foreground">
-              +{stats.revenueThisMonth.toLocaleString()} FCFA ce mois
-            </p>
+            <div className="text-2xl font-bold">{(stats.totalAnnouncements ?? 0).toLocaleString()}</div>
+            <p className="text-xs text-muted-foreground">Annonces publiées</p>
           </CardContent>
         </Card>
 

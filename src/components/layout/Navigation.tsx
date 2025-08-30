@@ -23,7 +23,7 @@ export default function Navigation() {
   const navigationItems = [
     { name: 'Tableau de bord', href: '/dashboard', icon: Home },
     { name: 'Recherche', href: '/search', icon: Search },
-    { name: 'Bibliothèque', href: '/library', icon: BookOpen },
+    { name: 'Archives', href: '/library', icon: BookOpen },
   ];
 
   const isActive = (href: string) => {
@@ -40,8 +40,12 @@ export default function Navigation() {
           {/* Logo and Desktop Navigation */}
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <Link href="/dashboard" className="text-xl font-bold text-blue-600">
-                MERRIVE Institutionnel
+              <Link href="/dashboard" className="inline-flex items-center">
+                <img
+                  src="/images/logo.png"
+                  alt="Merrive"
+                  className="h-8 w-auto"
+                />
               </Link>
             </div>
             

@@ -80,6 +80,7 @@ export interface DashboardStats {
   totalProjects: number; // totalServices dans l'API
   totalRevenue: number;
   totalArtisans: number; // totalProviders dans l'API
+  totalAnnouncements?: number; // ajouté pour dashboard institutionnel
   projectsThisMonth: number; // servicesThisMonth dans l'API
   revenueThisMonth: number;
   topCategories: Array<{

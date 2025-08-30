@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { Service, SearchFilters } from '@/types';
 import apiService from '@/services/api';
+import { useToast } from '@/contexts/ToastContext';
 import ProjectMedia from '@/components/media-viewer/ProjectMedia';
 
 interface SearchFormData {
@@ -35,7 +36,13 @@ export default function SearchPage() {
   const [loading, setLoading] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [providers, setProviders] = useState<any[]>([]);
+  const [providersLoading, setProvidersLoading] = useState(false);
+  const [providersError, setProvidersError] = useState<string | null>(null);
+  const [categories, setCategories] = useState<Array<{ id: string; name: string }>>([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(false);
+  const [categoriesError, setCategoriesError] = useState<string | null>(null);
   const [selectedProject, setSelectedProject] = useState<Service | null>(null);
+  const { showToast } = useToast();
 
   const {
     register,
@@ -47,17 +54,39 @@ export default function SearchPage() {
 
   const watchedQuery = watch('query');
 
-  useEffect(() => {
-    const fetchProviders = async () => {
-      try {
-        const data = await apiService.getProviders();
-        setProviders(data);
-      } catch (error) {
-        console.error('Erreur lors du chargement des prestataires:', error);
-      }
-    };
+  const fetchProviders = async () => {
+    setProvidersLoading(true);
+    setProvidersError(null);
+    try {
+      const data = await apiService.getProviders();
+      setProviders(data);
+    } catch (error: any) {
+      console.error('Erreur lors du chargement des prestataires:', error);
+      setProvidersError('Erreur de chargement des prestataires');
+      showToast({ type: 'error', message: 'Erreur de chargement des prestataires.' });
+    } finally {
+      setProvidersLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchProviders();
+    // load categories as well
+    (async () => {
+      setCategoriesLoading(true);
+      setCategoriesError(null);
+      try {
+        const list = await apiService.getCategories();
+        setCategories(list);
+      } catch (e: any) {
+        console.error('Erreur lors du chargement des catégories:', e);
+        setCategoriesError('Erreur de chargement des catégories');
+        showToast({ type: 'error', message: 'Erreur de chargement des catégories.' });
+      } finally {
+        setCategoriesLoading(false);
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onSubmit = async (data: SearchFormData) => {
@@ -80,8 +109,9 @@ export default function SearchPage() {
       }
       
       setServices(results);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erreur lors de la recherche:', error);
+      showToast({ type: 'error', message: 'Erreur lors de la recherche.' });
     } finally {
       setLoading(false);
     }
@@ -94,19 +124,35 @@ export default function SearchPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-green-100 text-green-800';
-      case 'completed': return 'bg-blue-100 text-blue-800';
-      case 'cancelled': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'in_progress':
+        return 'bg-green-100 text-green-800';
+      case 'completed':
+        return 'bg-blue-100 text-blue-800';
+      case 'cancelled':
+        return 'bg-red-100 text-red-800';
+      case 'draft':
+        return 'bg-gray-100 text-gray-800';
+      case 'on_hold':
+        return 'bg-yellow-100 text-yellow-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
   const getStatusLabel = (status: string) => {
     switch (status) {
-      case 'active': return 'Actif';
-      case 'completed': return 'Terminé';
-      case 'cancelled': return 'Annulé';
-      default: return status;
+      case 'in_progress':
+        return 'En cours';
+      case 'completed':
+        return 'Terminé';
+      case 'cancelled':
+        return 'Annulé';
+      case 'draft':
+        return 'Brouillon';
+      case 'on_hold':
+        return 'En pause';
+      default:
+        return status;
     }
   };
 
@@ -150,29 +196,78 @@ export default function SearchPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Catégorie
-                </label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Catégorie
+                  </label>
+                  <div className="flex items-center space-x-2">
+                    {categoriesLoading ? (
+                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-600 border-t-transparent" />
+                    ) : (
+                      <span className="text-xs text-gray-500">{categories.length} catégorie(s)</span>
+                    )}
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        setCategoriesLoading(true);
+                        setCategoriesError(null);
+                        try {
+                          const list = await apiService.getCategories();
+                          setCategories(list);
+                        } catch (e: any) {
+                          console.error('Erreur lors du chargement des catégories:', e);
+                          setCategoriesError('Erreur de chargement des catégories');
+                          showToast({ type: 'error', message: 'Erreur de chargement des catégories.' });
+                        } finally {
+                          setCategoriesLoading(false);
+                        }
+                      }}
+                      className="text-xs text-blue-600 hover:underline"
+                    >
+                      Rafraîchir
+                    </button>
+                  </div>
+                </div>
                 <select
                   {...register('category')}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="">Toutes les catégories</option>
-                  <option value="art">Art</option>
-                  <option value="music">Musique</option>
-                  <option value="literature">Littérature</option>
-                  <option value="photography">Photographie</option>
-                  <option value="video">Vidéo</option>
+                  {categories.map((cat) => (
+                    <option key={cat.id} value={cat.name}>{cat.name}</option>
+                  ))}
                 </select>
+                {!categoriesLoading && categories.length === 0 && (
+                  <p className="mt-1 text-xs text-gray-500">Aucune catégorie disponible.</p>
+                )}
+                {categoriesError && (
+                  <p className="mt-1 text-xs text-red-600">{categoriesError}</p>
+                )}
               </div>
             </div>
 
             {showFilters && (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Prestataire
-                  </label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Prestataire
+                    </label>
+                    <div className="flex items-center space-x-2">
+                      {providersLoading ? (
+                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-600 border-t-transparent" />
+                      ) : (
+                        <span className="text-xs text-gray-500">{providers.length} trouvé(s)</span>
+                      )}
+                      <button
+                        type="button"
+                        onClick={fetchProviders}
+                        className="text-xs text-blue-600 hover:underline"
+                      >
+                        Rafraîchir
+                      </button>
+                    </div>
+                  </div>
                   <select
                     {...register('providerId')}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -184,6 +279,12 @@ export default function SearchPage() {
                       </option>
                     ))}
                   </select>
+                  {!providersLoading && providers.length === 0 && (
+                    <p className="mt-1 text-xs text-gray-500">Aucun prestataire disponible.</p>
+                  )}
+                  {providersError && (
+                    <p className="mt-1 text-xs text-red-600">{providersError}</p>
+                  )}
                 </div>
 
                 <div>
@@ -195,7 +296,9 @@ export default function SearchPage() {
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">Tous les statuts</option>
-                    <option value="active">Actif</option>
+                    <option value="draft">Brouillon</option>
+                    <option value="in_progress">En cours</option>
+                    <option value="on_hold">En pause</option>
                     <option value="completed">Terminé</option>
                     <option value="cancelled">Annulé</option>
                   </select>

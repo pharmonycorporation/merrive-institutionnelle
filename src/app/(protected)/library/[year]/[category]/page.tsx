@@ -18,6 +18,7 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { Service } from '@/types';
 import apiService from '@/services/api';
+import { useToast } from '@/contexts/ToastContext';
 import ProjectMedia from '@/components/media-viewer/ProjectMedia';
 
 export default function CategoryProjectsPage() {
@@ -30,6 +31,7 @@ export default function CategoryProjectsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Service | null>(null);
+  const { showToast } = useToast();
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -37,9 +39,10 @@ export default function CategoryProjectsPage() {
         setLoading(true);
         const projectsData = await apiService.getLibraryCategoryProjects(year, category, 1, 50);
         setProjects(projectsData.projects);
-      } catch (error) {
+      } catch (error: any) {
         console.error('Erreur lors du chargement des projets:', error);
         // Fallback avec des données simulées
+        showToast({ type: 'info', message: 'Fallback archives: projets simulés.' });
         const mockProjects: Service[] = Array.from({ length: 15 }, (_, i) => ({
           id: `project-${i}`,
           name: `Projet ${category} ${i + 1}`,
