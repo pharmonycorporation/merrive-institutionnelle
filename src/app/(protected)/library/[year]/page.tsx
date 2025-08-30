@@ -24,7 +24,7 @@ interface CategoryStats {
   name: string;
   count: number;
   revenue: number;
-  logo: string | null;
+  icon?: string; // identifiant d'icône (palette, music, etc.)
 }
 
 export default function YearCategoriesPage() {
